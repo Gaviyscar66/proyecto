@@ -50,12 +50,21 @@ export default function Login() {
             />
           </div>
 
-          <div className="flex items-center justify-between text-sm">
+          <div className="flex flex-col gap-2 text-sm sm:flex-row sm:items-center sm:justify-between">
             <label className="flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" className="rounded border-gray-300 text-rose-500" />
+              <input
+                type="checkbox"
+                className="rounded border-gray-300 text-rose-500"
+              />
               <span className="text-gray-600">Recordarme</span>
             </label>
-            <Link to="#" className="text-rose-500 font-semibold hover:underline">¿Olvidaste tu contraseña?</Link>
+
+            <Link
+              to="#"
+              className="text-rose-500 font-semibold hover:underline text-center sm:text-right"
+            >
+              ¿Olvidaste tu contraseña?
+            </Link>
           </div>
 
           <button type="submit" className="w-full bg-rose-500 text-white py-4 rounded-xl font-bold text-lg hover:bg-rose-600 shadow-lg active:scale-95 transition-all mt-6">
