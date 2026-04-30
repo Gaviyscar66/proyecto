@@ -36,7 +36,7 @@ export default function Home() {
         </p>
         
         <p className="text-[10px] text-gray-300 mb-8 max-w-xs md:hidden">
-          En todas las fotos salen modelos y se utilizan solo para fines ilustrativos
+          Empieza a conocer gente nueva con gustos, hobbies y formas de ver la vida similares a las tuyas
         </p>
 
         <div className="flex flex-col md:flex-row gap-4 w-full max-w-sm md:max-w-none justify-center">
