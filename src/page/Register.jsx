@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { FcGoogle } from "react-icons/fc";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -12,28 +13,28 @@ export default function Register() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  try {
-    const res = await fetch("https://backend-production-578d.up.railway.app/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(formData)
-    });
+    try {
+      const res = await fetch("https://backend-production-578d.up.railway.app/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData)
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    alert(data);
-    navigate("/login");
+      alert(data);
+      navigate("/login");
 
-  } catch (error) {
-    alert("Error al registrar");
-    console.log(error);
-  }
-};
+    } catch (error) {
+      alert("Error al registrar");
+      console.log(error);
+    }
+  };
   return (
     <div className="min-h-screen flex items-center justify-center bg-transparent py-24 px-4">
       <div className="bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl p-8 md:p-12 max-w-xl w-full">
@@ -71,6 +72,11 @@ const handleSubmit = async (e) => {
 
           <button type="submit" className="w-full bg-rose-500 text-white py-3.5 rounded-xl font-bold text-lg hover:bg-rose-600 shadow-lg active:scale-95 mt-4 transition-all">
             Registrarse
+          </button>
+          <button className="w-full border border-white/20 rounded-xl py-3.5 font-bold text-lg bg-transparent backdrop-blur-md text-black hover:bg-white/10 shadow-lg active:scale-95 mt-4 transition-all duration-300 flex items-center justify-center gap-3">
+            <FcGoogle className="text-2xl" />
+
+            <span>Regístrate con Google</span>
           </button>
         </form>
 

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { FcGoogle } from "react-icons/fc";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -115,6 +116,12 @@ export default function Login() {
             className="w-full bg-rose-500 text-white py-4 rounded-xl font-bold text-lg hover:bg-rose-600 shadow-lg active:scale-95 transition-all mt-6"
           >
             Iniciar Sesión
+          </button>
+
+          <button className="w-full border border-white/20 rounded-xl py-3.5 font-bold text-lg bg-transparent backdrop-blur-md text-black hover:bg-white/10 shadow-lg active:scale-95 mt-4 transition-all duration-300 flex items-center justify-center gap-3">
+            <FcGoogle className="text-2xl" />
+
+            <span>Inicia sesion con Google</span>
           </button>
 
         </form>
