@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import imagenPC from "../assets/fondo.jpg"; 
-import imagenMovil from "../assets/telefono.jpg"; 
+import imagenPC from "../assets/fondopc.webp"; 
+import imagenMovil from "../assets/fondotl.webp"; 
 
 export default function Home() {
   const [esMovil, setEsMovil] = useState(window.innerWidth < 768);
@@ -14,7 +14,6 @@ export default function Home() {
 
   return (
     <div 
-      /* md:items-center y md:justify-center vuelven al centro en PC */
       className="min-h-screen flex flex-col justify-end items-center md:justify-center relative bg-gray-900 transition-all duration-500"
       style={{
         backgroundImage: `url(${esMovil ? imagenMovil : imagenPC})`,

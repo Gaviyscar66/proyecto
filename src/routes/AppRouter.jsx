@@ -11,8 +11,8 @@ import Nosotros from "../components/Nosotros";
 import Productos from "../components/Productos";
 import Seguridad from "../components/Seguridad";
 import Home from "../page/Inicio";
-import imagenPC from "../assets/fondo.jpg";
-import imagenMovil from "../assets/telefono.jpg";
+import imagenPC from "../assets/fondopc.webp";
+import imagenMovil from "../assets/fondotl.webp";
 
 export default function AppRouter() {
   const [esMovil, setEsMovil] = useState(window.innerWidth < 768);
