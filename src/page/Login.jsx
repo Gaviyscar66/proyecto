@@ -3,54 +3,96 @@ import { Link, useNavigate } from "react-router-dom";
 
 export default function Login() {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({ correo: "", contrasena: "" });
+
+  const [formData, setFormData] = useState({
+    correo: "",
+    contrasena: ""
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    navigate("/discover");
+
+    try {
+      const res = await fetch("https://backend-production-578d.up.railway.app/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert(data);
+        navigate("/discover");
+      } else {
+        alert(data);
+      }
+
+    } catch (error) {
+      console.log(error);
+      alert("Error al iniciar sesión");
+    }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-transparent px-4 py-20">
       <div className="bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl p-8 md:p-10 max-w-md w-full mx-4">
+
         <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2 text-center">
           Bienvenido de vuelta
         </h1>
-        <p className="text-gray-600 text-center mb-8">Inicia sesión en tu cuenta</p>
+
+        <p className="text-gray-600 text-center mb-8">
+          Inicia sesión en tu cuenta
+        </p>
 
         <form onSubmit={handleSubmit} className="space-y-5">
+
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Correo electrónico</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Correo electrónico
+            </label>
+
             <input
               type="email"
               name="correo"
               value={formData.correo}
               onChange={handleChange}
               required
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-rose-500 outline-none transition-all"
               placeholder="tunombre@ejemplo.com"
+              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-rose-500 outline-none transition-all"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Contraseña
+            </label>
+
             <input
               type="password"
               name="contrasena"
               value={formData.contrasena}
               onChange={handleChange}
               required
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-rose-500 outline-none transition-all"
               placeholder="••••••••"
+              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-rose-500 outline-none transition-all"
             />
           </div>
 
           <div className="flex flex-col gap-2 text-sm sm:flex-row sm:items-center sm:justify-between">
+
             <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
@@ -65,16 +107,28 @@ export default function Login() {
             >
               ¿Olvidaste tu contraseña?
             </Link>
+
           </div>
 
-          <button type="submit" className="w-full bg-rose-500 text-white py-4 rounded-xl font-bold text-lg hover:bg-rose-600 shadow-lg active:scale-95 transition-all mt-6">
+          <button
+            type="submit"
+            className="w-full bg-rose-500 text-white py-4 rounded-xl font-bold text-lg hover:bg-rose-600 shadow-lg active:scale-95 transition-all mt-6"
+          >
             Iniciar Sesión
           </button>
+
         </form>
 
         <p className="text-center text-gray-600 mt-6">
-          ¿No tienes cuenta? <Link to="/Register" className="text-rose-500 font-semibold hover:underline">Regístrate gratis</Link>
+          ¿No tienes cuenta?{" "}
+          <Link
+            to="/Register"
+            className="text-rose-500 font-semibold hover:underline"
+          >
+            Regístrate gratis
+          </Link>
         </p>
+
       </div>
     </div>
   );

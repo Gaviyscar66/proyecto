@@ -12,11 +12,28 @@ export default function Register() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    navigate("/login");
-  };
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
+  try {
+    const res = await fetch("https://backend-production-578d.up.railway.app/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(formData)
+    });
+
+    const data = await res.json();
+
+    alert(data);
+    navigate("/login");
+
+  } catch (error) {
+    alert("Error al registrar");
+    console.log(error);
+  }
+};
   return (
     <div className="min-h-screen flex items-center justify-center bg-transparent py-24 px-4">
       <div className="bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl p-8 md:p-12 max-w-xl w-full">
