@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
+import { authGoogle } from "../firebase/authGoogle";
+import { authEmailPass } from "../firebase/authEmailPass";
+
 
 export default function Login() {
   const navigate = useNavigate();
@@ -117,14 +120,14 @@ export default function Login() {
           >
             Iniciar Sesión
           </button>
-
-          <button className="w-full border border-white/20 rounded-xl py-3.5 font-bold text-lg bg-transparent backdrop-blur-md text-black hover:bg-white/10 shadow-lg active:scale-95 mt-4 transition-all duration-300 flex items-center justify-center gap-3">
-            <FcGoogle className="text-2xl" />
-
-            <span>Inicia sesion con Google</span>
-          </button>
-
         </form>
+
+
+        <button onClick={authGoogle} className="w-full border border-white/20 rounded-xl py-3.5 font-bold text-lg bg-transparent backdrop-blur-md text-black hover:bg-white/10 shadow-lg active:scale-95 mt-4 transition-all duration-300 flex items-center justify-center gap-3">
+          <FcGoogle className="text-2xl" />
+
+          <span>Inicia sesion con Google</span>
+        </button>
 
         <p className="text-center text-gray-600 mt-6">
           ¿No tienes cuenta?{" "}

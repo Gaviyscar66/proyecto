@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
+import { authGoogle } from "../firebase/authGoogle";
+import { authEmailPass } from "../firebase/authEmailPass";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -73,12 +75,12 @@ export default function Register() {
           <button type="submit" className="w-full bg-rose-500 text-white py-3.5 rounded-xl font-bold text-lg hover:bg-rose-600 shadow-lg active:scale-95 mt-4 transition-all">
             Registrarse
           </button>
-          <button className="w-full border border-white/20 rounded-xl py-3.5 font-bold text-lg bg-transparent backdrop-blur-md text-black hover:bg-white/10 shadow-lg active:scale-95 mt-4 transition-all duration-300 flex items-center justify-center gap-3">
-            <FcGoogle className="text-2xl" />
-
-            <span>Regístrate con Google</span>
-          </button>
         </form>
+        <button onClick={authGoogle} className="w-full border border-white/20 rounded-xl py-3.5 font-bold text-lg bg-transparent backdrop-blur-md text-black hover:bg-white/10 shadow-lg active:scale-95 mt-4 transition-all duration-300 flex items-center justify-center gap-3">
+          <FcGoogle className="text-2xl" />
+
+          <span>Regístrate con Google</span>
+        </button>
 
         <div className="text-center mt-8 pt-6 border-t border-gray-100">
           <p className="text-gray-600">
