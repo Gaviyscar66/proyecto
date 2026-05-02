@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { authGoogle } from "../firebase/authGoogle";
-import { authEmailPass } from "../firebase/authEmailPass";
 
 
 export default function Login() {
@@ -22,33 +21,28 @@ export default function Login() {
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    try {
-      const res = await fetch("https://backend-production-578d.up.railway.app/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(formData)
-      });
+  const res = await fetch("https://backend-production-578d.up.railway.app/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(formData)
+  });
 
-      const data = await res.json();
+  const data = await res.json();
 
-      if (res.ok) {
-        alert(data);
-        navigate("/discover");
-      } else {
-        alert(data);
-      }
+  if (res.ok) {
+    localStorage.setItem("usuario", JSON.stringify(data));
+    navigate("/discover");
+  } else {
+    alert(data);
+  }
+};
 
-    } catch (error) {
-      console.log(error);
-      alert("Error al iniciar sesión");
-    }
-  };
-
+  
   return (
     <div className="min-h-screen flex items-center justify-center bg-transparent px-4 py-20">
       <div className="bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl p-8 md:p-10 max-w-md w-full mx-4">

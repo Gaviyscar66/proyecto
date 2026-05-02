@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { authGoogle } from "../firebase/authGoogle";
-import { authEmailPass } from "../firebase/authEmailPass";
 
 export default function Register() {
   const navigate = useNavigate();
