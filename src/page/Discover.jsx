@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { FiMessageCircle, FiUser } from "react-icons/fi";
 
+// ... el resto de tu código
 export default function Discover() {
   const [usuarios, setUsuarios] = useState([]);
   const [index, setIndex] = useState(0);
@@ -154,12 +156,28 @@ export default function Discover() {
       <nav className="fixed top-0 left-0 w-full bg-white shadow-lg px-6 py-4 flex justify-between items-center z-50 border-b border-gray-200">
         <h1 className="text-2xl font-bold text-rose-500">VirtualFriends</h1>
 
-        <div className="flex gap-2">
-          <button className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition-colors duration-200">Chats</button>
-          <Link to="/profile" className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition-colors duration-200">Perfil</Link>
+        <div className="flex gap-2 items-center">
+          {/* Botón de Chats con icono */}
+          <button
+            className="bg-gray-100 hover:bg-gray-200 text-gray-700 p-2.5 rounded-lg transition-colors duration-200 flex items-center justify-center"
+            title="Chats" // Añadido title para accesibilidad
+          >
+            <FiMessageCircle size={22} />
+          </button>
+
+          {/* Enlace de Perfil con icono */}
+          <Link
+            to="/profile"
+            className="bg-gray-100 hover:bg-gray-200 text-gray-700 p-2.5 rounded-lg transition-colors duration-200 flex items-center justify-center"
+            title="Perfil" // Añadido title para accesibilidad
+          >
+            <FiUser size={22} />
+          </Link>
+
+          {/* Botón de Salir (se le agregó ml-2 para darle un poco de separación visual) */}
           <button
             onClick={salir}
-            className="bg-rose-500 hover:bg-rose-600 text-white px-6 py-2 rounded-lg transition-colors duration-200 font-medium"
+            className="bg-rose-500 hover:bg-rose-600 text-white px-6 py-2 rounded-lg transition-colors duration-200 font-medium ml-2"
           >
             Salir
           </button>
