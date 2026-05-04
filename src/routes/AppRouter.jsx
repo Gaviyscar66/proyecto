@@ -11,6 +11,7 @@ import Nosotros from "../components/Nosotros";
 import Productos from "../components/Productos";
 import Seguridad from "../components/Seguridad";
 import Home from "../page/Inicio";
+import UserProfile from "../page/UserProfile";
 import imagenPC from "../assets/fondopc.webp";
 import imagenMovil from "../assets/fondotl.webp";
 
@@ -49,6 +50,7 @@ export default function AppRouter() {
             <Route path="/nosotros" element={<Nosotros />} />
             <Route path="/productos" element={<Productos />} />
             <Route path="/seguridad" element={<Seguridad />} />
+            <Route path="/user/:id" element={<UserProfile />} />
           </Routes>
         </div>
       </div>
