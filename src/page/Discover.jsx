@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FiMessageCircle, FiUser } from "react-icons/fi";
+import { FiMessageCircle, FiUser, FiArrowLeft } from "react-icons/fi";
 
 // ... el resto de tu código
 export default function Discover() {
@@ -214,7 +214,7 @@ export default function Discover() {
               disabled={index === 0}
               className="bg-gray-400 hover:bg-gray-500 disabled:bg-gray-300 disabled:cursor-not-allowed text-white px-6 py-4 rounded-full font-medium transition-all duration-200 transform hover:scale-110 shadow-md"
             >
-              Regresar
+              <FiArrowLeft size={22} />
             </button>
 
             <button
