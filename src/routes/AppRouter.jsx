@@ -15,6 +15,7 @@ import UserProfile from "../page/UserProfile";
 import imagenPC from "../assets/fondopc.webp";
 import imagenMovil from "../assets/fondotl.webp";
 
+
 export default function AppRouter() {
   const [esMovil, setEsMovil] = useState(window.innerWidth < 768);
 

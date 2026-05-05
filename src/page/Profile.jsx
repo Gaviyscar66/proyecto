@@ -1,19 +1,69 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import Cropper from "react-easy-crop";
 
+// ==========================================
+// FUNCIÓN AUXILIAR PARA RECORTAR LA IMAGEN
+// ==========================================
+const createImage = (url) =>
+  new Promise((resolve, reject) => {
+    const image = new Image();
+    image.addEventListener("load", () => resolve(image));
+    image.addEventListener("error", (error) => reject(error));
+    image.setAttribute("crossOrigin", "anonymous");
+    image.src = url;
+  });
+
+async function getCroppedImg(imageSrc, pixelCrop) {
+  const image = await createImage(imageSrc);
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+
+  canvas.width = pixelCrop.width;
+  canvas.height = pixelCrop.height;
+
+  ctx.drawImage(
+    image,
+    pixelCrop.x,
+    pixelCrop.y,
+    pixelCrop.width,
+    pixelCrop.height,
+    0,
+    0,
+    pixelCrop.width,
+    pixelCrop.height
+  );
+
+  return new Promise((resolve) => {
+    canvas.toBlob((blob) => {
+      const file = new File([blob], "foto_perfil.jpg", { type: "image/jpeg" });
+      resolve(file);
+    }, "image/jpeg");
+  });
+}
+
+// ==========================================
+// COMPONENTE PRINCIPAL
+// ==========================================
 export default function Profile() {
+  // 1. TODOS LOS HOOKS DE ESTADO Y NAVEGACIÓN (SIEMPRE ARRIBA)
   const [user, setUser] = useState(null);
   const [editando, setEditando] = useState(false);
-
   const [bio, setBio] = useState("");
-  const [foto, setFoto] = useState("");
-
+  const [archivoPerfil, setArchivoPerfil] = useState(null);
+  const [archivoGaleria, setArchivoGaleria] = useState(null);
   const [fotos, setFotos] = useState([]);
-  const [nuevaFoto, setNuevaFoto] = useState("");
+
+  const [imageSrc, setImageSrc] = useState(null); 
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+  const [mostrarCropper, setMostrarCropper] = useState(false);
 
   const navigate = useNavigate();
   const usuario = JSON.parse(localStorage.getItem("usuario"));
 
+  // 2. LOS EFECTOS (HOOKS)
   useEffect(() => {
     if (!usuario || !usuario.id) {
       navigate("/login");
@@ -21,181 +71,241 @@ export default function Profile() {
     }
 
     fetch(`https://backend-production-578d.up.railway.app/user/${usuario.id}`)
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         setUser(data);
         setBio(data.bio || "");
-        setFoto(data.foto || "");
       });
 
     fetch(`https://backend-production-578d.up.railway.app/fotos/${usuario.id}`)
-      .then(res => res.json())
-      .then(data => setFotos(data));
-
+      .then((res) => res.json())
+      .then((data) => setFotos(data));
   }, [usuario?.id, navigate]);
 
+  // 🔥 3. useCallback ES UN HOOK, ASÍ QUE DEBE IR ANTES DEL RETURN (CORRECCIÓN AQUÍ)
+  const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
+    setCroppedAreaPixels(croppedAreaPixels);
+  }, []);
+
+  // 4. AHORA SÍ, LOS RETURNS TEMPRANOS
   if (!user) {
-    return <p className="text-center mt-10">Cargando perfil...</p>;
+    return (
+      <div className="flex h-screen items-center justify-center bg-gray-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-rose-500 border-opacity-50"></div>
+      </div>
+    );
   }
+
+  // ==========================
+  // LÓGICA DE EVENTOS (NO SON HOOKS)
+  // ==========================
+  const onFileChange = async (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      const imageDataUrl = await readFile(file);
+      setImageSrc(imageDataUrl);
+      setMostrarCropper(true); 
+    }
+  };
+
+  const readFile = (file) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.addEventListener("load", () => resolve(reader.result), false);
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const procesarRecorte = async () => {
+    try {
+      const croppedImageFile = await getCroppedImg(imageSrc, croppedAreaPixels);
+      setArchivoPerfil(croppedImageFile); 
+      setMostrarCropper(false); 
+    } catch (e) {
+      console.error(e);
+      alert("Error al recortar la imagen");
+    }
+  };
 
   const handleUpdate = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
+    formData.append("bio", bio);
+    if (archivoPerfil) formData.append("foto", archivoPerfil);
 
     await fetch(`https://backend-production-578d.up.railway.app/user/${usuario.id}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ bio, foto })
+      body: formData,
     });
 
-    const updatedUser = { ...user, bio, foto };
-    setUser(updatedUser);
-    localStorage.setItem("usuario", JSON.stringify(updatedUser));
+    const res = await fetch(`https://backend-production-578d.up.railway.app/user/${usuario.id}`);
+    const data = await res.json();
+
+    setUser(data);
+    localStorage.setItem("usuario", JSON.stringify(data));
     setEditando(false);
+    setArchivoPerfil(null);
+  };
+
+  const handleSubirFotoGaleria = async (e) => {
+    e.preventDefault();
+    if (!archivoGaleria) return alert("Selecciona una foto primero");
+    if (fotos.length >= 4) return alert("Solo puedes subir 4 fotos");
+
+    const formData = new FormData();
+    formData.append("user_id", usuario.id);
+    formData.append("foto", archivoGaleria);
+
+    await fetch("https://backend-production-578d.up.railway.app/fotos", {
+      method: "POST",
+      body: formData,
+    });
+
+    setArchivoGaleria(null);
+    const res = await fetch(`https://backend-production-578d.up.railway.app/fotos/${usuario.id}`);
+    const data = await res.json();
+    setFotos(data);
   };
 
   return (
-    <>
-      {/* 🔥 NAVBAR */}
-      <nav className="fixed top-0 left-0 w-full bg-white shadow px-6 py-4 flex justify-between">
-        <h1 className="text-xl font-bold text-rose-500">VirtualFriends</h1>
-
-        <div className="flex gap-2">
-          <Link
-            to="/discover"
-            className="bg-blue-500 text-white px-4 py-2 rounded"
-          >
-            Feed
-          </Link>
-
+    <div className="min-h-screen bg-gray-50 font-sans text-gray-800 pb-12 relative">
+      
+      {mostrarCropper && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl flex flex-col items-center">
+            <h2 className="text-xl font-bold mb-4 text-gray-800">Encuadra tu foto</h2>
+            
+            <div className="relative w-full h-64 bg-gray-100 rounded-2xl overflow-hidden mb-6">
+              <Cropper
+                image={imageSrc}
+                crop={crop}
+                zoom={zoom}
+                aspect={1} 
+                onCropChange={setCrop}
+                onCropComplete={onCropComplete}
+                onZoomChange={setZoom}
+                cropShape="round" 
+              />
+            </div>
+            
+            <div className="w-full flex gap-3">
+              <button
+                onClick={() => setMostrarCropper(false)}
+                className="flex-1 px-4 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-xl transition"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={procesarRecorte}
+                className="flex-1 px-4 py-3 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-xl transition shadow-md hover:shadow-lg"
+              >
+                Aceptar
+              </button>
+            </div>
+          </div>
         </div>
+      )}
+
+      <nav className="fixed top-0 left-0 w-full bg-white/80 backdrop-blur-md shadow-sm px-6 py-4 flex justify-between items-center z-50 border-b border-gray-100">
+        <h1 className="text-2xl font-extrabold bg-gradient-to-r from-rose-500 to-purple-600 bg-clip-text text-transparent tracking-tight">
+          VirtualFriends
+        </h1>
+        <Link to="/discover" className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium px-5 py-2 rounded-full transition-colors duration-200">
+          Ir al Feed
+        </Link>
       </nav>
 
-      <div className="min-h-screen bg-gray-100 p-6 pt-24 flex flex-col items-center">
-
-        {/* PERFIL */}
-        <img
-          src={user.foto || "https://i.imgur.com/6VBx3io.png"}
-          className="w-40 h-40 rounded-full object-cover mb-4"
-        />
-
-        <h1 className="text-2xl font-bold mb-2">
-          {user.nombre} {user.apellido}
-        </h1>
-
-        <p className="text-gray-600 mb-4 text-center">
-          {user.bio || "Sin biografía"}
-        </p>
-
-        <button
-          onClick={() => setEditando(!editando)}
-          className="bg-blue-500 text-white px-4 py-2 rounded mb-4"
-        >
-          {editando ? "Cancelar" : "Editar perfil"}
-        </button>
-
-        {/* EDITAR PERFIL */}
-        {editando && (
-          <form onSubmit={handleUpdate} className="flex flex-col gap-3 w-full max-w-md">
-
-            <input
-              type="text"
-              placeholder="URL de foto de perfil"
-              value={foto}
-              onChange={(e) => setFoto(e.target.value)}
-              className="p-2 border rounded"
+      <div className="max-w-2xl mx-auto pt-28 px-4">
+        
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden mb-8">
+          <div className="h-32 bg-gradient-to-r from-rose-400 to-purple-500"></div>
+          <div className="px-6 pb-6 flex flex-col items-center -mt-16">
+            <img
+              src={user.foto || "https://i.imgur.com/6VBx3io.png"}
+              className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-md mb-4 bg-white"
+              alt="Perfil"
             />
+            <h1 className="text-3xl font-bold text-gray-900">{user.nombre} {user.apellido}</h1>
+            <p className="text-gray-500 mt-2 text-center max-w-sm leading-relaxed">
+              {user.bio || "Agrega una biografía para que otros te conozcan mejor."}
+            </p>
+            <button
+              onClick={() => setEditando(!editando)}
+              className="mt-6 border-2 border-gray-200 hover:border-gray-300 text-gray-700 font-semibold px-6 py-2 rounded-full transition-all duration-200"
+            >
+              {editando ? "Cancelar edición" : "Editar perfil"}
+            </button>
+          </div>
+        </div>
 
+        {editando && (
+          <form onSubmit={handleUpdate} className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 mb-8 animate-fade-in-down">
+            <h2 className="text-xl font-bold mb-4 text-gray-800">Editar Información</h2>
+            
+            <label className="block text-sm font-semibold text-gray-600 mb-2">Cambiar Foto de Perfil:</label>
+            <div className="flex items-center justify-center w-full mb-4">
+              <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-rose-300 border-dashed rounded-2xl cursor-pointer bg-rose-50 hover:bg-rose-100 transition-colors">
+                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                  <span className="text-rose-600 font-medium text-center px-4">
+                    {archivoPerfil ? "¡Foto recortada y lista! 📸" : "Haz clic para subir y recortar tu foto"}
+                  </span>
+                </div>
+                <input type="file" accept="image/*" onChange={onFileChange} className="hidden" />
+              </label>
+            </div>
+
+            <label className="block text-sm font-semibold text-gray-600 mb-2">Biografía:</label>
             <textarea
-              placeholder="Escribe tu bio..."
+              placeholder="Escribe algo sobre ti..."
               value={bio}
               onChange={(e) => setBio(e.target.value)}
-              className="p-2 border rounded"
+              className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-rose-500 focus:border-transparent outline-none transition-all resize-none h-28"
             />
-
-            <button className="bg-green-500 text-white p-2 rounded">
+            <button type="submit" className="w-full mt-6 bg-gradient-to-r from-rose-500 to-purple-600 hover:from-rose-600 hover:to-purple-700 text-white font-bold py-3 rounded-xl shadow-md transform hover:-translate-y-0.5 transition-all duration-200">
               Guardar cambios
             </button>
           </form>
         )}
 
-        {/* AGREGAR FOTO */}
-        <form
-          onSubmit={async (e) => {
-            e.preventDefault();
-
-            if (!nuevaFoto) {
-              alert("Pon una URL");
-              return;
-            }
-
-            if (fotos.length >= 4) {
-              alert("Solo puedes subir 4 fotos");
-              return;
-            }
-
-            await fetch("https://backend-production-578d.up.railway.app/fotos", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                user_id: usuario.id,
-                url: nuevaFoto
-              })
-            });
-
-            setNuevaFoto("");
-
-            const res = await fetch(
-              `https://backend-production-578d.up.railway.app/fotos/${usuario.id}`
-            );
-            const data = await res.json();
-            setFotos(data);
-          }}
-          className="flex flex-col gap-3 mt-4"
-        >
-          <input
-            type="text"
-            placeholder="URL de la foto"
-            value={nuevaFoto}
-            onChange={(e) => setNuevaFoto(e.target.value)}
-            className="p-2 border rounded"
-          />
-
-          <button className="bg-purple-500 text-white p-2 rounded">
-            Agregar foto
-          </button>
-        </form>
-
-        {/* GALERÍA */}
-        <div className="grid grid-cols-2 gap-2 mt-4 w-full max-w-md">
-          {fotos.map((f) => (
-            <div key={f.id} className="relative">
-              <img
-                src={f.url}
-                className="w-full h-32 object-cover rounded"
-              />
-
-              <button
-                onClick={async () => {
-                  await fetch(
-                    `https://backend-production-578d.up.railway.app/fotos/${f.id}/${usuario.id}`,
-                    { method: "DELETE" }
-                  );
-
-                  const res = await fetch(
-                    `https://backend-production-578d.up.railway.app/fotos/${usuario.id}`
-                  );
-                  const data = await res.json();
-                  setFotos(data);
-                }}
-                className="absolute top-1 right-1 bg-red-500 text-white px-2 rounded"
-              >
-                ❌
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
+          <h2 className="text-xl font-bold mb-4 text-gray-800">Mi Galería</h2>
+          <form onSubmit={handleSubirFotoGaleria} className="mb-6">
+            <label className="block text-sm font-semibold text-gray-600 mb-2">Agregar nueva foto (Máx 4):</label>
+            <div className="flex gap-3 items-center">
+              <label className="flex-1 flex items-center justify-center h-12 px-4 border-2 border-gray-300 border-dashed rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors overflow-hidden">
+                <span className="text-gray-500 text-sm font-medium">{archivoGaleria ? archivoGaleria.name : "Seleccionar archivo..."}</span>
+                <input type="file" accept="image/*" onChange={(e) => setArchivoGaleria(e.target.files[0])} className="hidden" />
+              </label>
+              <button type="submit" className="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-6 py-3 rounded-xl shadow-sm transition-colors duration-200">
+                Subir
               </button>
             </div>
-          ))}
-        </div>
+          </form>
 
+          {fotos.length === 0 ? (
+            <p className="text-center text-gray-400 py-8 italic">No hay fotos en tu galería aún.</p>
+          ) : (
+            <div className="grid grid-cols-2 gap-4">
+              {fotos.map((f) => (
+                <div key={f.id} className="relative group rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+                  <img src={f.url} className="w-full h-48 object-cover transform group-hover:scale-105 transition-transform duration-300" alt="Galería" />
+                  <button
+                    onClick={async () => {
+                      await fetch(`https://backend-production-578d.up.railway.app/fotos/${f.id}/${usuario.id}`, { method: "DELETE" });
+                      const res = await fetch(`https://backend-production-578d.up.railway.app/fotos/${usuario.id}`);
+                      const data = await res.json();
+                      setFotos(data);
+                    }}
+                    className="absolute top-2 right-2 bg-red-500/90 hover:bg-red-600 text-white w-8 h-8 flex items-center justify-center rounded-full backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-md"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
-    </>
+    </div>
   );
 }
