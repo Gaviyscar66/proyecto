@@ -63,7 +63,7 @@ export default function UserProfile() {
             </h1>
 
             <p className="text-gray-500 mb-2 font-medium text-center">
-              {user.ocupacion || "Sin ocupacimn"}
+              {user.ocupacion || "Sin ocupacion"}
             </p>
 
             <p className="text-gray-600 text-center mb-6 max-w-sm leading-relaxed">
