@@ -304,6 +304,7 @@ export default function Discover() {
               <button
                 onClick={() => {
                   setDatosMatch(null);
+                  navigate("/chats")
                   // Aquí podrías navegar directamente al chat mañana
                   // navigate("/chat"); 
                 }}
