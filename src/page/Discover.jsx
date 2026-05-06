@@ -10,6 +10,9 @@ export default function Discover() {
   const navigate = useNavigate();
   const usuario = JSON.parse(localStorage.getItem("usuario")) || {};
 
+  // Agrega este estado arriba
+  const [datosMatch, setDatosMatch] = useState(null); // Guardará la info de la otra persona
+
   useEffect(() => {
     if (!usuario || !usuario.id) {
       navigate("/login");
@@ -31,7 +34,6 @@ export default function Discover() {
   const avanzar = () => {
     setIndex((prev) => prev + 1);
   };
-
   const like = async () => {
     if (!usuarios[index]) return;
 
@@ -49,11 +51,17 @@ export default function Discover() {
 
       const data = await res.json();
 
+      // 🔥 AQUÍ ESTÁ EL CAMBIO CLAVE:
       if (data.match) {
-        alert("?? IT'S A MATCH ??");
+        // En lugar de alert, llenamos los datos para mostrar el modal
+        setDatosMatch({
+          nombre: usuarios[index].nombre,
+          foto: usuarios[index].foto
+        });
+      } else {
+        // Solo avanzamos si NO hubo match (para que el modal no se cierre solo)
+        avanzar();
       }
-
-      avanzar();
 
     } catch (error) {
       console.log("Error en like:", error);
@@ -91,6 +99,27 @@ export default function Discover() {
   const salir = () => {
     localStorage.removeItem("usuario");
     navigate("/login");
+  };
+
+  const handleLike = async (para_usuario_id, foto_otra_persona, nombre_otra_persona) => {
+    const res = await fetch("https://backend-production-578d.up.railway.app/like", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        de_usuario: usuario.id,
+        para_usuario: para_usuario_id
+      })
+    });
+
+    const data = await res.json();
+
+    if (data.match) {
+      // 🔥 En lugar de alert(), activamos nuestro modal personalizado
+      setDatosMatch({
+        nombre: nombre_otra_persona,
+        foto: foto_otra_persona
+      });
+    }
   };
 
   // ?? CASO: no hay usuarios en absoluto
@@ -158,12 +187,12 @@ export default function Discover() {
 
         <div className="flex gap-2 items-center">
           {/* Botón de Chats con icono */}
-          <button
+          <Link to="/chats"
             className="bg-gray-100 hover:bg-gray-200 text-gray-700 p-2.5 rounded-lg transition-colors duration-200 flex items-center justify-center"
             title="Chats" // Añadido title para accesibilidad
           >
             <FiMessageCircle size={22} />
-          </button>
+          </Link>
 
           {/* Enlace de Perfil con icono */}
           <Link
@@ -241,6 +270,65 @@ export default function Discover() {
           </Link>
         </div>
       </div>
+      {/* 🔥 MODAL DE MATCH PERSONALIZADO */}
+      {datosMatch && (
+        <div className="fixed inset-0 z-[300] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-fade-in">
+          <div className="bg-white rounded-[40px] p-8 max-w-sm w-full shadow-2xl border border-rose-100 flex flex-col items-center text-center relative overflow-hidden">
+
+            {/* Decoración de fondo */}
+            <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-r from-rose-400 to-purple-500 opacity-20"></div>
+
+            <h2 className="text-4xl font-black text-rose-500 mb-2 mt-8 tracking-tighter">
+              ¡IT'S A MATCH!
+            </h2>
+
+            <p className="text-gray-600 mb-8 font-medium">
+              Tú y <span className="text-purple-600 font-bold">{datosMatch.nombre}</span> se han gustado.
+            </p>
+
+            {/* Fotos Cruzadas */}
+            <div className="flex items-center justify-center -space-x-6 mb-10">
+              <img
+                src={usuario.foto || "https://i.imgur.com/6VBx3io.png"}
+                className="w-28 h-28 rounded-full border-4 border-white shadow-lg object-cover rotate-[-5deg]"
+                alt="Tu foto"
+              />
+              <img
+                src={datosMatch.foto || "https://i.imgur.com/6VBx3io.png"}
+                className="w-28 h-28 rounded-full border-4 border-white shadow-lg object-cover rotate-[5deg]"
+                alt="Foto match"
+              />
+            </div>
+
+            <div className="flex flex-col gap-3 w-full">
+              <button
+                onClick={() => {
+                  setDatosMatch(null);
+                  // Aquí podrías navegar directamente al chat mañana
+                  // navigate("/chat"); 
+                }}
+                className="bg-gradient-to-r from-rose-500 to-purple-600 text-white font-bold py-4 rounded-2xl shadow-lg hover:scale-105 transition-transform active:scale-95"
+              >
+                Enviar Mensaje
+              </button>
+
+              <button
+                onClick={() => {
+                  setDatosMatch(null);
+                  avanzar();
+                }}
+                className="text-gray-400 font-semibold hover:text-gray-600 transition-colors py-2"
+              >
+                Seguir deslizando
+              </button>
+            </div>
+
+            {/* Confetti o corazones (Opcional: puedes poner emojis flotando) */}
+            <div className="absolute top-10 left-10 text-2xl animate-bounce">❤️</div>
+            <div className="absolute bottom-24 right-10 text-2xl animate-pulse">🔥</div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

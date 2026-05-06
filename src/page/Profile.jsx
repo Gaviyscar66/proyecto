@@ -161,7 +161,7 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans text-gray-800 pb-12 relative">
-      
+
       {/* --- MODAL CROPPER --- */}
       {mostrarCropper && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
@@ -189,27 +189,43 @@ export default function Profile() {
 
       {/* 🔥 NUEVO: MODAL LIGHTBOX (Para ver foto completa) */}
       {fotoAmpliada && (
-        <div 
+        <div
           className="fixed inset-0 z-[200] flex items-center justify-center bg-black/95 backdrop-blur-md p-4 transition-all"
           onClick={() => setFotoAmpliada(null)}
         >
           <button className="absolute top-6 right-6 text-white bg-white/10 hover:bg-white/20 rounded-full w-12 h-12 flex items-center justify-center text-2xl backdrop-blur-md">✕</button>
-          <img 
-            src={fotoAmpliada} 
+          <img
+            src={fotoAmpliada}
             className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl animate-zoom-in"
             alt="Ampliada"
-            onClick={(e) => e.stopPropagation()} 
+            onClick={(e) => e.stopPropagation()}
           />
         </div>
       )}
 
       <nav className="fixed top-0 left-0 w-full bg-white/80 backdrop-blur-md shadow-sm px-6 py-4 flex justify-between items-center z-50 border-b border-gray-100">
-        <h1 className="text-2xl font-extrabold bg-gradient-to-r from-rose-500 to-purple-600 bg-clip-text text-transparent">VirtualFriends</h1>
-        <Link to="/discover" className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium px-5 py-2 rounded-full transition-colors">Feed</Link>
-      </nav>
+        <h1 className="text-2xl font-extrabold bg-gradient-to-r from-rose-500 to-purple-600 bg-clip-text text-transparent">
+          VirtualFriends
+        </h1>
 
+        {/* 🔥 Agrupamos ambos botones en este div con flex y separación (gap-2) */}
+        <div className="flex gap-2 items-center">
+          <Link
+            to="/historial"
+            className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium px-5 py-2 rounded-full transition-colors"
+          >
+            Likes
+          </Link>
+          <Link
+            to="/discover"
+            className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium px-5 py-2 rounded-full transition-colors"
+          >
+            Feed
+          </Link>
+        </div>
+      </nav>
       <div className="max-w-2xl mx-auto pt-28 px-4">
-        
+
         {/* PERFIL CARD */}
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden mb-8">
           <div className="h-32 bg-gradient-to-r from-rose-400 to-purple-500"></div>
@@ -265,12 +281,12 @@ export default function Profile() {
           <div className="grid grid-cols-2 gap-4">
             {fotos.map((f) => (
               <div key={f.id} className="relative group rounded-2xl overflow-hidden shadow-sm border border-gray-100">
-                <img 
-                  src={f.url} 
+                <img
+                  src={f.url}
                   // 🔥 Llamamos al modal de ampliar
                   onClick={() => setFotoAmpliada(f.url)}
-                  className="w-full h-48 object-cover cursor-pointer hover:scale-105 transition-transform duration-300" 
-                  alt="Galería" 
+                  className="w-full h-48 object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
+                  alt="Galería"
                 />
                 <button
                   onClick={async (e) => {
