@@ -76,26 +76,30 @@ export default function Login() {
             />
           </div>
 
-          <div>
+          <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Contraseña
             </label>
-            <input
-              type={mostrarPassword ? "text" : "password"} // 🔥 Cambia dinámicamente
-              name="contrasena"
-              value={formData.contrasena}
-              onChange={handleChange}
-              required
-              placeholder="••••••••"
-              className="w-full px-4 py-3 pr-12 rounded-xl border border-gray-300 focus:ring-2 focus:ring-rose-500 outline-none transition-all"
-            />
 
-            <button
-              type="button"
-              onClick={() => setMostrarPassword(!mostrarPassword)}
-              className="absolute inset-y-0 right-9 bottom-9 pr-4 flex items-center text-gray-400 hover:text-rose-500 transition-colors cursor-pointer"            >
-              {mostrarPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
-            </button>
+            <div className="relative w-full">
+              <input
+                type={mostrarPassword ? "text" : "password"}
+                name="contrasena"
+                value={formData.contrasena}
+                onChange={handleChange}
+                required
+                placeholder="••••••••"
+                className="w-full px-4 py-3 pr-12 rounded-xl border border-gray-300 focus:ring-2 focus:ring-rose-500 outline-none transition-all text-sm"
+              />
+
+              <button
+                type="button"
+                onClick={() => setMostrarPassword(!mostrarPassword)}
+                className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-rose-500 transition-colors cursor-pointer"
+              >
+                {mostrarPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+              </button>
+            </div>
           </div>
 
           <div className="flex flex-col gap-2 text-sm sm:flex-row sm:items-center sm:justify-between">
