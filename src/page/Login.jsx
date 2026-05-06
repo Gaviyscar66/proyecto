@@ -68,7 +68,7 @@ export default function Login() {
               value={formData.correo}
               onChange={handleChange}
               required
-              placeholder="tunombre@ejemplo.com"
+              placeholder="sergio@ejemplo.com"
               className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-rose-500 outline-none transition-all"
             />
           </div>

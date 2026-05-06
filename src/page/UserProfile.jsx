@@ -7,17 +7,16 @@ export default function UserProfile() {
   const [user, setUser] = useState(null);
   const [fotos, setFotos] = useState([]);
   
-  // 🔥 ESTADO PARA EL LIGHTBOX (Ver foto completa)
+
   const [fotoAmpliada, setFotoAmpliada] = useState(null);
 
   useEffect(() => {
-    // Traer usuario
+
     fetch(`https://backend-production-578d.up.railway.app/user/${id}`)
       .then(res => res.json())
       .then(data => setUser(data))
       .catch(err => console.log("Error user:", err));
 
-    // Traer fotos
     fetch(`https://backend-production-578d.up.railway.app/fotos/${id}`)
       .then(res => res.json())
       .then(data => setFotos(data))
@@ -36,7 +35,6 @@ export default function UserProfile() {
   return (
     <div className="min-h-screen bg-gray-50 font-sans text-gray-800 pb-12 relative">
       
-      {/* 🔥 MODAL LIGHTBOX (Se activa al tocar cualquier foto) */}
       {fotoAmpliada && (
         <div 
           className="fixed inset-0 z-[200] flex items-center justify-center bg-black/95 backdrop-blur-md p-4 transition-all"
@@ -54,7 +52,6 @@ export default function UserProfile() {
         </div>
       )}
 
-      {/* NAVBAR */}
       <nav className="fixed top-0 left-0 w-full bg-white/80 backdrop-blur-md shadow-sm px-6 py-4 flex justify-between items-center z-50 border-b border-gray-100">
         <h1 className="text-2xl font-extrabold bg-gradient-to-r from-rose-500 to-purple-600 bg-clip-text text-transparent tracking-tight">
           VirtualFriends
@@ -67,10 +64,8 @@ export default function UserProfile() {
         </Link>
       </nav>
 
-      {/* CONTENEDOR PRINCIPAL */}
       <div className="max-w-2xl mx-auto pt-28 px-4">
-        
-        {/* PROFILE CARD ESTILO BANNER */}
+       
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden mb-8 text-center">
           <div className="h-32 bg-gradient-to-r from-rose-400 to-purple-500"></div>
           
@@ -80,7 +75,7 @@ export default function UserProfile() {
                 src={user.foto || "https://i.imgur.com/6VBx3io.png"}
                 className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-md bg-white cursor-pointer"
                 alt="Perfil"
-                onClick={() => setFotoAmpliada(user.foto)} // También se puede ampliar la de perfil
+                onClick={() => setFotoAmpliada(user.foto)} 
               />
               <div className="absolute bottom-2 right-2 w-6 h-6 bg-green-500 rounded-full border-4 border-white shadow-sm"></div>
             </div>
@@ -97,7 +92,6 @@ export default function UserProfile() {
           </div>
         </div>
 
-        {/* PHOTOS GALLERY */}
         <div className="w-full">
           <h3 className="text-xl font-bold text-gray-800 mb-6 px-2">Fotos</h3>
           
@@ -111,11 +105,10 @@ export default function UserProfile() {
                 <div key={f.id} className="relative group rounded-2xl overflow-hidden shadow-sm border border-gray-100 bg-white">
                   <img
                     src={f.url}
-                    onClick={() => setFotoAmpliada(f.url)} // 🔥 Al tocar, ampliamos
+                    onClick={() => setFotoAmpliada(f.url)} 
                     className="w-full h-48 sm:h-64 object-cover cursor-pointer transform group-hover:scale-105 transition-transform duration-300"
                     alt="Galería"
                   />
-                  {/* Overlay sutil al pasar el mouse (solo en PC) */}
                   <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
                 </div>
               ))}

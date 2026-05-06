@@ -48,22 +48,22 @@ export default function Register() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
-              <input type="text" name="nombre" value={formData.nombre} onChange={handleChange} required className="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-rose-500 outline-none" placeholder="Juan" />
+              <input type="text" name="nombre" value={formData.nombre} onChange={handleChange} required className="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-rose-500 outline-none" placeholder="Sergio" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Apellido</label>
-              <input type="text" name="apellido" value={formData.apellido} onChange={handleChange} required className="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-rose-500 outline-none" placeholder="Pérez" />
+              <input type="text" name="apellido" value={formData.apellido} onChange={handleChange} required className="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-rose-500 outline-none" placeholder="Rondon" />
             </div>
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Correo electrónico</label>
-            <input type="email" name="correo" value={formData.correo} onChange={handleChange} required className="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-rose-500 outline-none" placeholder="juan@ejemplo.com" />
+            <input type="email" name="correo" value={formData.correo} onChange={handleChange} required className="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-rose-500 outline-none" placeholder="sergio@ejemplo.com" />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Cédula</label>
-            <input type="text" name="cedula" value={formData.cedula} onChange={handleChange} required className="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-rose-500 outline-none" placeholder="12345678" />
+            <input type="text" name="cedula" value={formData.cedula} onChange={handleChange} required className="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-rose-500 outline-none" placeholder="123456789" />
           </div>
 
           <div>

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FiMessageCircle, FiUser, FiArrowLeft } from "react-icons/fi";
 
-// ... el resto de tu código
 export default function Discover() {
   const [usuarios, setUsuarios] = useState([]);
   const [index, setIndex] = useState(0);
@@ -10,8 +9,7 @@ export default function Discover() {
   const navigate = useNavigate();
   const usuario = JSON.parse(localStorage.getItem("usuario")) || {};
 
-  // Agrega este estado arriba
-  const [datosMatch, setDatosMatch] = useState(null); // Guardará la info de la otra persona
+  const [datosMatch, setDatosMatch] = useState(null); 
 
   useEffect(() => {
     if (!usuario || !usuario.id) {
@@ -51,15 +49,12 @@ export default function Discover() {
 
       const data = await res.json();
 
-      // 🔥 AQUÍ ESTÁ EL CAMBIO CLAVE:
       if (data.match) {
-        // En lugar de alert, llenamos los datos para mostrar el modal
         setDatosMatch({
           nombre: usuarios[index].nombre,
           foto: usuarios[index].foto
         });
       } else {
-        // Solo avanzamos si NO hubo match (para que el modal no se cierre solo)
         avanzar();
       }
 
@@ -114,7 +109,6 @@ export default function Discover() {
     const data = await res.json();
 
     if (data.match) {
-      // 🔥 En lugar de alert(), activamos nuestro modal personalizado
       setDatosMatch({
         nombre: nombre_otra_persona,
         foto: foto_otra_persona
@@ -122,7 +116,6 @@ export default function Discover() {
     }
   };
 
-  // ?? CASO: no hay usuarios en absoluto
   if (usuarios.length === 0) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-6">
@@ -147,7 +140,6 @@ export default function Discover() {
     );
   }
 
-  // ?? CASO: llegaste al final
   if (index >= usuarios.length) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col items-center justify-center p-6">
@@ -181,29 +173,25 @@ export default function Discover() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      {/* NAV */}
       <nav className="fixed top-0 left-0 w-full bg-white shadow-lg px-6 py-4 flex justify-between items-center z-50 border-b border-gray-200">
         <h1 className="text-2xl font-bold text-rose-500">VirtualFriends</h1>
 
         <div className="flex gap-2 items-center">
-          {/* Botón de Chats con icono */}
           <Link to="/chats"
             className="bg-gray-100 hover:bg-gray-200 text-gray-700 p-2.5 rounded-lg transition-colors duration-200 flex items-center justify-center"
-            title="Chats" // Añadido title para accesibilidad
+            title="Chats" 
           >
             <FiMessageCircle size={22} />
           </Link>
 
-          {/* Enlace de Perfil con icono */}
           <Link
             to="/profile"
             className="bg-gray-100 hover:bg-gray-200 text-gray-700 p-2.5 rounded-lg transition-colors duration-200 flex items-center justify-center"
-            title="Perfil" // Añadido title para accesibilidad
+            title="Perfil" 
           >
             <FiUser size={22} />
           </Link>
 
-          {/* Botón de Salir (se le agregó ml-2 para darle un poco de separación visual) */}
           <button
             onClick={salir}
             className="bg-rose-500 hover:bg-rose-600 text-white px-6 py-2 rounded-lg transition-colors duration-200 font-medium ml-2"
@@ -213,7 +201,6 @@ export default function Discover() {
         </div>
       </nav>
 
-      {/* CARD */}
       <div className="min-h-screen flex justify-center items-center pt-24 p-6">
         <div className="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-md text-center transform transition-all duration-300 hover:scale-105">
           <div className="relative mb-6">
@@ -227,13 +214,10 @@ export default function Discover() {
             {perfil.nombre}
           </h1>
 
-       
-
           <p className="text-gray-600 mb-6 leading-relaxed max-w-sm mx-auto">
             {perfil.bio || "Sin biografia"}
           </p>
 
-          {/* BOTONES */}
           <div className="flex gap-4 justify-center mb-6">
             <button
               onClick={back}
@@ -258,7 +242,6 @@ export default function Discover() {
             </button>
           </div>
 
-          {/* VER PERFIL */}
           <Link
             to={`/user/${perfil.id}`}
             className="inline-block bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-8 py-3 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-md"
@@ -267,12 +250,10 @@ export default function Discover() {
           </Link>
         </div>
       </div>
-      {/* 🔥 MODAL DE MATCH PERSONALIZADO */}
       {datosMatch && (
         <div className="fixed inset-0 z-[300] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-fade-in">
           <div className="bg-white rounded-[40px] p-8 max-w-sm w-full shadow-2xl border border-rose-100 flex flex-col items-center text-center relative overflow-hidden">
 
-            {/* Decoración de fondo */}
             <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-r from-rose-400 to-purple-500 opacity-20"></div>
 
             <h2 className="text-4xl font-black text-rose-500 mb-2 mt-8 tracking-tighter">
@@ -283,7 +264,6 @@ export default function Discover() {
               Tú y <span className="text-purple-600 font-bold">{datosMatch.nombre}</span> se han gustado.
             </p>
 
-            {/* Fotos Cruzadas */}
             <div className="flex items-center justify-center -space-x-6 mb-10">
               <img
                 src={usuario.foto || "https://i.imgur.com/6VBx3io.png"}
@@ -302,8 +282,6 @@ export default function Discover() {
                 onClick={() => {
                   setDatosMatch(null);
                   navigate("/chats")
-                  // Aquí podrías navegar directamente al chat mañana
-                  // navigate("/chat"); 
                 }}
                 className="bg-gradient-to-r from-rose-500 to-purple-600 text-white font-bold py-4 rounded-2xl shadow-lg hover:scale-105 transition-transform active:scale-95"
               >
@@ -321,7 +299,6 @@ export default function Discover() {
               </button>
             </div>
 
-            {/* Confetti o corazones (Opcional: puedes poner emojis flotando) */}
             <div className="absolute top-10 left-10 text-2xl animate-bounce">❤️</div>
             <div className="absolute bottom-24 right-10 text-2xl animate-pulse">🔥</div>
           </div>

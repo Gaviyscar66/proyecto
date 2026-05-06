@@ -2,9 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Cropper from "react-easy-crop";
 
-// ==========================================
-// FUNCIONES AUXILIARES (Recorte de imagen)
-// ==========================================
+
 const createImage = (url) =>
   new Promise((resolve, reject) => {
     const image = new Image();
@@ -39,11 +37,9 @@ async function getCroppedImg(imageSrc, pixelCrop) {
   });
 }
 
-// ==========================================
-// COMPONENTE PRINCIPAL
-// ==========================================
+
 export default function Profile() {
-  // --- 1. ESTADOS (HOOKS) ---
+
   const [user, setUser] = useState(null);
   const [editando, setEditando] = useState(false);
   const [bio, setBio] = useState("");
@@ -51,20 +47,19 @@ export default function Profile() {
   const [archivoGaleria, setArchivoGaleria] = useState(null);
   const [fotos, setFotos] = useState([]);
 
-  // Estados del Cropper
+  
   const [imageSrc, setImageSrc] = useState(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [mostrarCropper, setMostrarCropper] = useState(false);
 
-  // 🔥 NUEVO: Estado para ver foto ampliada (Lightbox)
   const [fotoAmpliada, setFotoAmpliada] = useState(null);
 
   const navigate = useNavigate();
   const usuario = JSON.parse(localStorage.getItem("usuario"));
 
-  // --- 2. EFECTOS ---
+
   useEffect(() => {
     if (!usuario || !usuario.id) {
       navigate("/login");
@@ -83,12 +78,11 @@ export default function Profile() {
       .then((data) => setFotos(data));
   }, [usuario?.id, navigate]);
 
-  // --- 3. CALLBACKS (Deben ir antes de cualquier 'return') ---
   const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
     setCroppedAreaPixels(croppedAreaPixels);
   }, []);
 
-  // --- 4. CARGA ---
+ 
   if (!user) {
     return (
       <div className="flex h-screen items-center justify-center bg-gray-50">
@@ -97,7 +91,7 @@ export default function Profile() {
     );
   }
 
-  // --- 5. FUNCIONES DE MANEJO ---
+
   const onFileChange = async (e) => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
@@ -162,7 +156,7 @@ export default function Profile() {
   return (
     <div className="min-h-screen bg-gray-50 font-sans text-gray-800 pb-12 relative">
 
-      {/* --- MODAL CROPPER --- */}
+  
       {mostrarCropper && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
           <div className="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl flex flex-col items-center">
@@ -187,7 +181,6 @@ export default function Profile() {
         </div>
       )}
 
-      {/* 🔥 NUEVO: MODAL LIGHTBOX (Para ver foto completa) */}
       {fotoAmpliada && (
         <div
           className="fixed inset-0 z-[200] flex items-center justify-center bg-black/95 backdrop-blur-md p-4 transition-all"
@@ -208,7 +201,6 @@ export default function Profile() {
           VirtualFriends
         </h1>
 
-        {/* 🔥 Agrupamos ambos botones en este div con flex y separación (gap-2) */}
         <div className="flex gap-2 items-center">
           <Link
             to="/historial"
@@ -226,7 +218,6 @@ export default function Profile() {
       </nav>
       <div className="max-w-2xl mx-auto pt-28 px-4">
 
-        {/* PERFIL CARD */}
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden mb-8">
           <div className="h-32 bg-gradient-to-r from-rose-400 to-purple-500"></div>
           <div className="px-6 pb-6 flex flex-col items-center -mt-16">
@@ -243,7 +234,6 @@ export default function Profile() {
           </div>
         </div>
 
-        {/* FORMULARIO EDICIÓN */}
         {editando && (
           <form onSubmit={handleUpdate} className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 mb-8">
             <h2 className="text-xl font-bold mb-4 text-gray-800">Editar Información</h2>
@@ -264,7 +254,6 @@ export default function Profile() {
           </form>
         )}
 
-        {/* GALERÍA CARD */}
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
           <h2 className="text-xl font-bold mb-4 text-gray-800">Mi Galería</h2>
           <form onSubmit={handleSubirFotoGaleria} className="mb-6">
@@ -277,20 +266,19 @@ export default function Profile() {
             </div>
           </form>
 
-          {/* GRID DE FOTOS */}
           <div className="grid grid-cols-2 gap-4">
             {fotos.map((f) => (
               <div key={f.id} className="relative group rounded-2xl overflow-hidden shadow-sm border border-gray-100">
                 <img
                   src={f.url}
-                  // 🔥 Llamamos al modal de ampliar
+                  
                   onClick={() => setFotoAmpliada(f.url)}
                   className="w-full h-48 object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
                   alt="Galería"
                 />
                 <button
                   onClick={async (e) => {
-                    e.stopPropagation(); // Evita que se abra el modal al borrar
+                    e.stopPropagation(); 
                     await fetch(`https://backend-production-578d.up.railway.app/fotos/${f.id}/${usuario.id}`, { method: "DELETE" });
                     const res = await fetch(`https://backend-production-578d.up.railway.app/fotos/${usuario.id}`);
                     const data = await res.json();

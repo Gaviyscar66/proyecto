@@ -38,7 +38,6 @@ export default function LikesHistory() {
     );
   }
 
-  // Decidir qué lista mostrar según la pestaña activa
   const listaMostrar = pestañaActiva === "recibidos" ? recibidos : enviados;
 
   return (
@@ -56,7 +55,6 @@ export default function LikesHistory() {
       </nav>
 
       <div className="max-w-md mx-auto pt-24 px-4">
-        {/* INTERRUPTOR DE PESTAÑAS (TABS) */}
         <div className="flex bg-gray-100 p-1 rounded-2xl mb-6 shadow-inner">
           <button
             onClick={() => setPestañaActiva("recibidos")}
@@ -80,7 +78,6 @@ export default function LikesHistory() {
           </button>
         </div>
 
-        {/* LISTADO */}
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
           {listaMostrar.length === 0 ? (
             <div className="text-center py-12 flex flex-col items-center">
@@ -107,7 +104,7 @@ export default function LikesHistory() {
               {listaMostrar.map((item) => (
                 <Link
                   key={item.id}
-                  to={`/user/${item.id}`} // Te manda a ver su perfil para que puedas darle Like de vuelta
+                  to={`/user/${item.id}`} 
                   className="flex items-center gap-4 py-4 hover:bg-gray-50 px-2 rounded-2xl transition-colors group"
                 >
                   <img
@@ -127,7 +124,7 @@ export default function LikesHistory() {
                       {item.ocupacion || "Explorador"}
                     </p>
                   </div>
-                  {/* Iconito decorativo */}
+                 
                   <div className={`p-2.5 rounded-full ${
                     pestañaActiva === "recibidos" ? "bg-rose-50 text-rose-500" : "bg-purple-50 text-purple-500"
                   }`}>
