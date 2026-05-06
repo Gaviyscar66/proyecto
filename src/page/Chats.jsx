@@ -164,7 +164,6 @@ export default function Chats() {
                       </h3>
                       <p className="text-xs text-gray-400">Haz clic para chatear</p>
                     </div>
-                    <span className="w-2.5 h-2.5 bg-green-500 rounded-full shadow-sm"></span>
                   </Link>
                 ))}
               </div>
@@ -193,7 +192,6 @@ export default function Chats() {
         <Link to="/chats" className="text-gray-500 hover:text-rose-500 transition-colors">
           <FiArrowLeft size={24} />
         </Link>
-        {/* 🔥 FOTO DEL HEADER CON AUTOCURADO DE IMAGEN ROTA */}
         <img 
           src={otroUsuario.foto || "https://i.imgur.com/6VBx3io.png"} 
           onError={(e) => {
@@ -205,7 +203,6 @@ export default function Chats() {
         />
         <div>
           <h2 className="font-bold text-gray-800 leading-tight">{otroUsuario.nombre}</h2>
-          <span className="text-xs text-green-500 font-medium">En línea ahora</span>
         </div>
       </header>
 

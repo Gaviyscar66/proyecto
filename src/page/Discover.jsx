@@ -221,16 +221,13 @@ export default function Discover() {
               src={perfil.foto || `https://picsum.photos/300?random=${perfil.id}`}
               className="w-full h-80 object-cover rounded-2xl shadow-lg"
             />
-            <div className="absolute top-4 right-4 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
           </div>
 
           <h1 className="text-3xl font-bold text-gray-800 mb-2">
             {perfil.nombre}
           </h1>
 
-          <p className="text-gray-500 mb-2 font-medium">
-            {perfil.ocupacion || "Sin ocupacion"}
-          </p>
+       
 
           <p className="text-gray-600 mb-6 leading-relaxed max-w-sm mx-auto">
             {perfil.bio || "Sin biografia"}

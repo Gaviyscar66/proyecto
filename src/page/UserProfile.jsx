@@ -89,9 +89,7 @@ export default function UserProfile() {
               {user.nombre} {user.apellido}
             </h1>
 
-            <p className="text-rose-500 font-semibold tracking-wide uppercase text-xs mt-1">
-              {user.ocupacion || "Sin ocupación"}
-            </p>
+         
 
             <p className="text-gray-500 mt-4 max-w-sm leading-relaxed italic">
               "{user.bio || "Aun no ha agregado una biografia"}"
