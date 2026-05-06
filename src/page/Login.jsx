@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FcGoogle } from "react-icons/fc";
+import { FcGoogle, } from "react-icons/fc";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 import { authGoogle } from "../firebase/authGoogle";
 
 
 export default function Login() {
   const navigate = useNavigate();
+
+  const [mostrarPassword, setMostrarPassword] = useState(false);
 
   const [formData, setFormData] = useState({
     correo: "",
@@ -21,28 +24,28 @@ export default function Login() {
     }));
   };
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  const res = await fetch("https://backend-production-578d.up.railway.app/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(formData)
-  });
+    const res = await fetch("https://backend-production-578d.up.railway.app/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(formData)
+    });
 
-  const data = await res.json();
+    const data = await res.json();
 
-  if (res.ok) {
-    localStorage.setItem("usuario", JSON.stringify(data));
-    navigate("/discover");
-  } else {
-    alert(data);
-  }
-};
+    if (res.ok) {
+      localStorage.setItem("usuario", JSON.stringify(data));
+      navigate("/discover");
+    } else {
+      alert(data);
+    }
+  };
 
-  
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-transparent px-4 py-20">
       <div className="bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl p-8 md:p-10 max-w-md w-full mx-4">
@@ -77,16 +80,22 @@ export default function Login() {
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Contraseña
             </label>
-
             <input
-              type="password"
+              type={mostrarPassword ? "text" : "password"} // 🔥 Cambia dinámicamente
               name="contrasena"
               value={formData.contrasena}
               onChange={handleChange}
               required
               placeholder="••••••••"
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-rose-500 outline-none transition-all"
+              className="w-full px-4 py-3 pr-12 rounded-xl border border-gray-300 focus:ring-2 focus:ring-rose-500 outline-none transition-all"
             />
+
+            <button
+              type="button"
+              onClick={() => setMostrarPassword(!mostrarPassword)}
+              className="absolute inset-y-0 right-9 bottom-9 pr-4 flex items-center text-gray-400 hover:text-rose-500 transition-colors cursor-pointer"            >
+              {mostrarPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+            </button>
           </div>
 
           <div className="flex flex-col gap-2 text-sm sm:flex-row sm:items-center sm:justify-between">
