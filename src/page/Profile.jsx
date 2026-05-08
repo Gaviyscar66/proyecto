@@ -154,9 +154,7 @@ export default function Profile() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans text-gray-800 pb-12 relative">
-
-  
+    <div className="min-h-screen bg-gray-50 font-sans text-gray-800 pb-12 relative">  
       {mostrarCropper && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
           <div className="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl flex flex-col items-center">
