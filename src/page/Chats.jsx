@@ -13,7 +13,7 @@ export default function Chats() {
   const [mensajes, setMensajes] = useState([]);
   const [nuevoMensaje, setNuevoMensaje] = useState("");
   const [otroUsuario, setOtroUsuario] = useState(null);
-  const [fecha, setFecha] = useState([])
+  const [fecha, setFecha] = useState(null)
   
   const scrollRef = useRef();
 
