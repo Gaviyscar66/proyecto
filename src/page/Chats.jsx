@@ -13,6 +13,7 @@ export default function Chats() {
   const [mensajes, setMensajes] = useState([]);
   const [nuevoMensaje, setNuevoMensaje] = useState("");
   const [otroUsuario, setOtroUsuario] = useState(null);
+  const [fecha, setFecha] = useState([])
   
   const scrollRef = useRef();
 
@@ -75,7 +76,8 @@ export default function Chats() {
     const msgData = {
       de_id: usuario.id,
       para_id: receptorId,
-      contenido: nuevoMensaje
+      contenido: nuevoMensaje,
+      fecha: fecha
     };
 
     await fetch("https://backend-production-578d.up.railway.app/mensajes", {

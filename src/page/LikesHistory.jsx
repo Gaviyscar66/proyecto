@@ -9,7 +9,7 @@ export default function LikesHistory() {
   const [enviados, setEnviados] = useState([]);
   const [recibidos, setRecibidos] = useState([]);
   const [cargando, setCargando] = useState(true);
-  const [pestañaActiva, setPestañaActiva] = useState("recibidos"); // "recibidos" o "enviados"
+  const [pestañaActiva, setPestañaActiva] = useState("recibidos"); 
 
   useEffect(() => {
     if (!usuario || !usuario.id) {
